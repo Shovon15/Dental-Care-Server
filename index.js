@@ -24,25 +24,32 @@ async function run() {
 
         app.get("/services", async (req, res) => {
             const query = {};
+            const cursor = serviceCollection.find(query).limit(3);
+            const services = await cursor.toArray();
+            // console.log(services);
+            res.send(services);
+        });
+        app.get("/allServices", async (req, res) => {
+            const query = {};
             const cursor = serviceCollection.find(query);
             const services = await cursor.toArray();
             // console.log(services);
             res.send(services);
+        });
 
-            app.get("/services/:id", async (req, res) => {
-                const id = req.params.id;
-                const query = { _id: ObjectId(id) };
-                const service = await serviceCollection.findOne(query);
-                // console.log(service);
-                res.send(service);
+        app.get("/services/:id", async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const service = await serviceCollection.findOne(query);
+            // console.log(service);
+            res.send(service);
+        });
 
-                app.post("/services", async (req, res) => {
-                    const service = req.body;
-                    // console.log(service);
-                    const result = await serviceCollection.insertOne(service);
-                    res.send(result);
-                });
-            });
+        app.post("/services", async (req, res) => {
+            const service = req.body;
+            // console.log(service);
+            const result = await serviceCollection.insertOne(service);
+            res.send(result);
         });
     } finally {
     }
