@@ -21,6 +21,7 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         const serviceCollection = client.db("dentalCare").collection("services");
+        const reviewCollection = client.db("dentalCare").collection("reviews");
 
         app.get("/services", async (req, res) => {
             const query = {};
@@ -36,6 +37,26 @@ async function run() {
             // console.log(services);
             res.send(services);
         });
+        app.get("/reviews", async (req, res) => {
+            const query = {};
+            const cursor = reviewCollection.find(query);
+            const services = await cursor.toArray();
+            // console.log(services);
+            res.send(services);
+        });
+
+        app.get("/myReviews", async (req, res) => {
+            let query = {};
+            if (req.query.email) {
+                query = {
+                    email: req.query.email,
+                };
+            }
+            const cursor = reviewCollection.find(query);
+            const review = await cursor.toArray();
+            // console.log(services);
+            res.send(review);
+        });
 
         app.get("/services/:id", async (req, res) => {
             const id = req.params.id;
@@ -49,6 +70,12 @@ async function run() {
             const service = req.body;
             // console.log(service);
             const result = await serviceCollection.insertOne(service);
+            res.send(result);
+        });
+        app.post("/reviews", async (req, res) => {
+            const review = req.body;
+            // console.log(service);
+            const result = await reviewCollection.insertOne(review);
             res.send(result);
         });
     } finally {
