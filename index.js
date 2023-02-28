@@ -22,6 +22,7 @@ async function run() {
     try {
         const serviceCollection = client.db("dentalCare").collection("services");
         const reviewCollection = client.db("dentalCare").collection("reviews");
+        const appointmentCollection = client.db("dentalCare").collection("appointment");
 
         app.get("/services", async (req, res) => {
             const query = {};
@@ -70,6 +71,12 @@ async function run() {
             const service = req.body;
             // console.log(service);
             const result = await serviceCollection.insertOne(service);
+            res.send(result);
+        });
+        app.post("/appointments", async (req, res) => {
+            const appointment = req.body;
+            // console.log(service);
+            const result = await appointmentCollection.insertOne(appointment);
             res.send(result);
         });
         app.post("/reviews", async (req, res) => {
